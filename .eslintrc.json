@@ -1,0 +1,40 @@
+{
+  "root": true,
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "env": {
+    "commonjs": true,
+    "es2021": true,
+    "node": true,
+    "jest/globals": true
+  },
+  // Do not change extends order without understanding the consequences.
+  "extends": [
+    "eslint:recommended", // https://github.com/eslint/eslint/blob/main/conf/eslint-recommended.js
+    "google", // https://github.com/google/eslint-config-google/blob/master/index.js
+    "prettier" // https://github.com/prettier/eslint-config-prettier
+  ],
+  "overrides": [
+    {
+      "files": ["tests/**"],
+      "plugins": ["jest"],
+      "extends": ["plugin:jest/recommended", "plugin:jest/style"]
+    }
+  ],
+  "rules": {
+    "complexity": ["warn", 5], // Cyclomatic Complexity
+    "require-jsdoc": "off" // Disable jsdoc requirement
+  },
+  "ignorePatterns": [
+    ".git",
+    ".vscode",
+    "node_modules",
+    "dist",
+    "coverage",
+    ".env",
+    ".env.*",
+    "!.env.example",
+    "package-lock.json"
+  ]
+}

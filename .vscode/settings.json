@@ -1,0 +1,30 @@
+{
+	"editor.formatOnSave": true,
+	"editor.tabSize": 2,
+	"editor.insertSpaces": true,
+	"editor.detectIndentation": true,
+	"editor.rulers": [
+		120
+	],
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"[jsonc]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"prettier.configPath": "",
+	"eslint.validate": [
+		"javascript",
+		"json",
+		"markdown"
+	],
+	"eslint.probe": [
+		"javascript",
+		"json",
+		"markdown"
+	],
+}
