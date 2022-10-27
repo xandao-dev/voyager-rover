@@ -15,4 +15,4 @@ services:
       - .:/usr/src/app
     ports:
       - 9229:9229
-    command: ['node', '--inspect=0.0.0.0:9229', './src/index.js']
+    command: ['node', '--inspect=0.0.0.0:9229', './src/voyager-rover.js']

@@ -4,9 +4,9 @@
   "description": "A fictional calculator of final coordinates of a squadron of robotic rovers that landed by NASA on a plateau on Mars.",
   "author": "Alexandre Calil",
   "license": "MIT",
-  "main": "./src/index.js",
+  "main": "./src/voyager-rover.js",
   "scripts": {
-    "start": "node ./src/index.js",
+    "start": "node ./src/voyager-rover.js",
     "test": "jest",
     "format:check": "prettier --check --ignore-unknown .",
     "format:fix": "prettier --write --ignore-unknown .",
