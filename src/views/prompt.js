@@ -9,7 +9,7 @@ function createPrompt(configs = {}) {
       output: process.stdout,
     });
 
-  if (!readlineInterface.question || !readlineInterface.close) {
+  if (!readlineInterface?.question || !readlineInterface?.close) {
     throw new ViewError({ message: 'Invalid readline interface', view: 'prompt' });
   }
 
