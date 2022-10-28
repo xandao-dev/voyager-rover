@@ -24,7 +24,8 @@
   ],
   "rules": {
     "complexity": ["warn", 5], // Cyclomatic Complexity
-    "require-jsdoc": "off" // Disable jsdoc requirement
+    "require-jsdoc": "off", // Disable jsdoc requirement
+    "no-constant-condition": "off" // Allow while(true) loops
   },
   "ignorePatterns": [
     ".git",

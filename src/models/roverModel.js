@@ -1,7 +1,7 @@
 const { cardinalDirections, cardinalDirectionsDegrees } = require('../utils/constants.js');
 const { getKeyByValue } = require('../utils/helpers.js');
 
-function createRover({ x, y, direction }) {
+function createRover({ id, pos: { x, y, direction } }) {
   const getPosition = () => ({ x, y, direction });
 
   const estimateForwardPosition = () => {
@@ -19,10 +19,23 @@ function createRover({ x, y, direction }) {
     }
   };
 
+  const willCollide = (rovers, forwardPosition) => {
+    const otherRovers = rovers.filter((rover) => rover !== id);
+    return otherRovers.some((neighborRover) => {
+      const neighborRoverPosition = neighborRover.position();
+      return neighborRoverPosition.x === forwardPosition.x && neighborRoverPosition.y === forwardPosition.y;
+    });
+  };
+
   const moveForward = (map) => {
     const forwardPosition = estimateForwardPosition();
+
+    if (willCollide(map.rovers, forwardPosition)) {
+      throw new Error('Rover will collide with another rover');
+    }
+
     if (!map.isWithinBounds(forwardPosition)) {
-      throw new Error('Rover cannot move outside the plateau');
+      throw new Error('Rover cannot move outside the bounds');
     }
     x = forwardPosition.x;
     y = forwardPosition.y;

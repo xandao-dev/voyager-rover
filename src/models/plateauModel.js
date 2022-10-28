@@ -5,6 +5,7 @@ function createPlateau({ startX, startY, endX, endY }) {
     endX,
     endY,
     isWithinBounds: ({ x, y }) => x >= startX && x <= endX && y >= startY && y <= endY,
+    rovers: [],
   };
 }
 
