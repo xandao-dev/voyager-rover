@@ -1,11 +1,11 @@
-class ViewError extends Error {
+class InputError extends Error {
   constructor({ message, view } = {}) {
     super();
 
-    this.name = 'ViewError';
+    this.name = 'InputError';
     this.message = message;
     this.view = view;
   }
 }
 
-module.exports = { ViewError };
+module.exports = { InputError };
