@@ -15,6 +15,10 @@ describe('createPrompt', () => {
       jest.clearAllMocks();
     });
 
+    it('should not throw with the original readline interface', () => {
+      expect(() => createPrompt()).not.toThrow();
+    });
+
     it('should return an object with ask and close methods', () => {
       expect(prompt).toHaveProperty('ask');
       expect(prompt).toHaveProperty('close');
