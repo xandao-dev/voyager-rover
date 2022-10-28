@@ -1,4 +1,4 @@
-const { createPrompt } = require('../../src/view/prompt.js');
+const { createPrompt } = require('../../src/views/prompt.js');
 
 describe('createPrompt', () => {
   describe('happy path', () => {
