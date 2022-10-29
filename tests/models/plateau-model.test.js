@@ -1,5 +1,10 @@
 const { createPlateauModel } = require('../../src/models/plateau-model.js');
 
+const roverMock = {
+  id: 0,
+  position: jest.fn(() => ({ x: 5, y: 5, direction: 'N' })),
+};
+
 describe('createPlateauModel', () => {
   describe('happy path', () => {
     it('should return an object with isWithinBounds, landRover methods and rovers array', () => {
@@ -41,7 +46,7 @@ describe('createPlateauModel', () => {
     describe('landRover', () => {
       it('should add a object to rovers array', () => {
         const plateau = createPlateauModel({ endX: 10, endY: 10 });
-        plateau.landRover({ x: 5, y: 5 });
+        plateau.landRover(roverMock);
         expect(plateau.rovers()).toHaveLength(1);
       });
     });
@@ -63,6 +68,12 @@ describe('createPlateauModel', () => {
     it('should throw an error when passing start coordinates greater than end coordinates', () => {
       expect(() => createPlateauModel({ startX: 10, startY: 10, endX: 5, endY: 5 })).toThrow();
       expect(() => createPlateauModel({ startX: 10, startY: 5, endX: 5, endY: 10 })).toThrow();
+    });
+    describe('landRover', () => {
+      it('should not land rover if position is outside bounds', () => {
+        const plateau = createPlateauModel({ endX: 2, endY: 2 });
+        expect(() => plateau.landRover(roverMock)).toThrow();
+      });
     });
   });
 });
