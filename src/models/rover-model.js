@@ -2,20 +2,23 @@ const { cardinalDirections, cardinalDirectionsDegrees } = require('../utils/cons
 const { getKeyByValue } = require('../utils/helpers.js');
 
 function createRover({ id, pos: { x, y, direction } }) {
-  const getPosition = () => ({ x, y, direction });
+  const roverId = id;
+  const roverPosition = { x, y, direction };
+  const getPosition = () => ({ ...roverPosition });
 
   const estimateForwardPosition = () => {
-    switch (direction) {
-      case cardinalDirections.NORTH:
-        return { x, y: y + 1 };
-      case cardinalDirections.EAST:
-        return { x: x + 1, y };
-      case cardinalDirections.SOUTH:
-        return { x, y: y - 1 };
-      case cardinalDirections.WEST:
-        return { x: x - 1, y };
-      default:
-        throw new Error(`Invalid direction: ${direction}`);
+    const { x, y } = roverPosition;
+
+    if (roverPosition.direction === cardinalDirections.NORTH) {
+      return { x, y: y + 1 };
+    } else if (roverPosition.direction === cardinalDirections.EAST) {
+      return { x: x + 1, y };
+    } else if (roverPosition.direction === cardinalDirections.SOUTH) {
+      return { x, y: y - 1 };
+    } else if (roverPosition.direction === cardinalDirections.WEST) {
+      return { x: x - 1, y };
+    } else {
+      throw new Error('Invalid direction');
     }
   };
 
@@ -27,18 +30,19 @@ function createRover({ id, pos: { x, y, direction } }) {
     });
   };
 
-  const moveForward = (map) => {
+  const moveForward = (map, rovers) => {
     const forwardPosition = estimateForwardPosition();
 
-    if (willCollide(map.rovers, forwardPosition)) {
+    if (willCollide(rovers, forwardPosition)) {
       throw new Error('Rover will collide with another rover');
     }
 
     if (!map.isWithinBounds(forwardPosition)) {
       throw new Error('Rover cannot move outside the bounds');
     }
-    x = forwardPosition.x;
-    y = forwardPosition.y;
+
+    roverPosition.x = forwardPosition.x;
+    roverPosition.y = forwardPosition.y;
   };
 
   const rotateTo = (directionCommand) => {
@@ -53,22 +57,31 @@ function createRover({ id, pos: { x, y, direction } }) {
     } else if (newDirectionDegree >= 360) {
       newDirectionDegree -= 360;
     }
-    direction = getKeyByValue(cardinalDirectionsDegrees, newDirectionDegree);
+    roverPosition.direction = getKeyByValue(cardinalDirectionsDegrees, newDirectionDegree);
   };
 
-  const move = (map, command) => {
+  const move = (map, rovers, command) => {
     if (command === 'M') {
-      moveForward(map);
+      try {
+        moveForward(map, rovers);
+      } catch (error) {
+        // FIXME: add a logger
+        console.error(error.message);
+      }
     } else {
       rotateTo(command);
     }
   };
 
+  const sequenceMove = (map, rovers, commands) => commands.forEach((command) => move(map, rovers, command));
+
   return {
+    id: roverId,
     position: getPosition,
     moveForward,
     rotateTo,
     move,
+    sequenceMove,
   };
 }
 
