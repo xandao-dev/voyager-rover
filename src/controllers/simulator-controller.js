@@ -19,7 +19,7 @@ function createSimulatorController() {
   const landRover = async (plateau, id) => {
     const roverPosition = await prompt.ask('Landing Position: ');
     const [roverX, roverY, roverDirection] = validate(roverPosition, roverPositionRegex, roverPositionTypes);
-    const rover = createRoverModel({ id, pos: { x: roverX, y: roverY, direction: roverDirection } });
+    const rover = createRoverModel({ id, pos: { x: roverX, y: roverY, direction: roverDirection } }, plateau);
     plateau.landRover(rover);
     return { rover };
   };
@@ -38,7 +38,7 @@ function createSimulatorController() {
       while (true) {
         const { rover } = await landRover(plateau, roverId);
         const { roverCommands } = await getRoverCommands(rover);
-        rover.sequentialMove(plateau, roverCommands);
+        rover.sequentialMove(roverCommands);
 
         const { x, y, direction } = rover.position();
         console.log(`Final Position: ${x} ${y} ${direction}\n`);

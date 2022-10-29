@@ -11,15 +11,7 @@ function createPlateauModel({ startX = 0, startY = 0, endX, endY } = {}) {
     const yWithinBounds = y >= bounds.startY && y <= bounds.endY;
     return xWithinBounds && yWithinBounds;
   };
-
-  const landRover = (rover) => {
-    const { x, y } = rover.position();
-    if (!isWithinBounds({ x, y })) {
-      throw new RangeError('Rover cannot be landed outside plateau bounds');
-    }
-    rovers.push(rover);
-  };
-
+  const landRover = (rover) => rovers.push(rover);
   const getRovers = () => rovers;
 
   return {

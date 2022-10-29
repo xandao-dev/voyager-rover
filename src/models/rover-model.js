@@ -2,16 +2,17 @@ const { cardinalDirections, cardinalDirectionsDegrees, roverCommands } = require
 const { ValidationError } = require('../errors/validation-error.js');
 const { getKeyByValue } = require('../utils/helpers.js');
 
-function createRoverModel({ id, pos: { x, y, direction } }) {
+function createRoverModel({ id, pos: { x, y, direction } }, plateau) {
   const roverId = id;
   const roverPosition = { x, y, direction };
 
   validateRoverId(roverId);
   validateRoverCoordinates(roverPosition.x, roverPosition.y);
   validateRoverDirection(roverPosition.direction);
+  validatePlateau(plateau);
+  validateLandingPosition(plateau, roverPosition.x, roverPosition.y);
 
   const getPosition = () => ({ ...roverPosition });
-
   const estimateForwardPosition = () => {
     const { x, y } = roverPosition;
 
@@ -25,30 +26,27 @@ function createRoverModel({ id, pos: { x, y, direction } }) {
       return { x: x - 1, y };
     }
   };
-
-  const willCollide = (map, forwardPosition) => {
-    const otherRovers = map.rovers().filter((rover) => rover !== id);
+  const willCollide = (forwardPosition) => {
+    const otherRovers = plateau.rovers().filter((rover) => rover !== id);
     return otherRovers.some((neighborRover) => {
       const neighborRoverPosition = neighborRover.position();
       return neighborRoverPosition.x === forwardPosition.x && neighborRoverPosition.y === forwardPosition.y;
     });
   };
-
-  const moveForwardCarefully = (map) => {
+  const moveForwardCarefully = () => {
     const forwardPosition = estimateForwardPosition();
 
-    if (willCollide(map, forwardPosition)) {
+    if (willCollide(forwardPosition)) {
       return;
     }
 
-    if (!map.isWithinBounds(forwardPosition)) {
+    if (!plateau.isWithinBounds(forwardPosition)) {
       return;
     }
 
     roverPosition.x = forwardPosition.x;
     roverPosition.y = forwardPosition.y;
   };
-
   const rotateTo = (directionCommand) => {
     let newDirectionDegree = cardinalDirectionsDegrees[roverPosition.direction];
     if (directionCommand === roverCommands.TURN_LEFT) {
@@ -63,21 +61,16 @@ function createRoverModel({ id, pos: { x, y, direction } }) {
     }
     roverPosition.direction = getKeyByValue(cardinalDirectionsDegrees, newDirectionDegree);
   };
-
-  const move = (map, command) => {
+  const move = (command) => {
     validateCommand(command);
 
     if (command === roverCommands.FORWARD) {
-      moveForwardCarefully(map);
+      moveForwardCarefully();
     } else {
       rotateTo(command);
     }
   };
-
-  const sequentialMove = (map, commands) => {
-    validateMap(map);
-    commands.forEach((command) => move(map, command));
-  };
+  const sequentialMove = (commands) => commands.forEach((command) => move(command));
 
   return {
     id: roverId,
@@ -94,7 +87,6 @@ function validateRoverId(id) {
     throw new ValidationError('Rover id must be zero or greater');
   }
 }
-
 function validateRoverCoordinates(x, y) {
   if (!Number.isInteger(x) || !Number.isInteger(y)) {
     throw new ValidationError('Rover coordinates must be integers');
@@ -103,19 +95,30 @@ function validateRoverCoordinates(x, y) {
     throw new ValidationError('Rover coordinates must be zero or greater');
   }
 }
-
 function validateRoverDirection(direction) {
   if (!Object.values(cardinalDirections).includes(direction)) {
     throw new ValidationError('Rover direction must be one of N, E, S, W');
   }
 }
-
-function validateMap(map) {
-  if (!map?.rovers || !map?.isWithinBounds) {
-    throw new Error('Invalid map');
+function validatePlateau(plateau) {
+  if (!plateau?.rovers || !plateau?.isWithinBounds) {
+    throw new Error('Invalid plateau');
   }
 }
-
+function validateLandingPosition(plateau, x, y) {
+  if (!plateau.isWithinBounds({ x, y })) {
+    throw new Error('Rover cannot be placed outside of the plateau');
+  }
+  const hasAnotherRoverInPoint = plateau.rovers().some((neighborRover) => {
+    const neighborRoverPosition = neighborRover.position();
+    if (neighborRoverPosition.x === x && neighborRoverPosition.y === y) {
+      return true;
+    }
+  });
+  if (hasAnotherRoverInPoint) {
+    throw new Error('Rover cannot be placed on top of another rover');
+  }
+}
 function validateCommand(command) {
   if (!Object.values(roverCommands).includes(command)) {
     throw new Error('Invalid command');

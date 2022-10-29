@@ -69,11 +69,5 @@ describe('createPlateauModel', () => {
       expect(() => createPlateauModel({ startX: 10, startY: 10, endX: 5, endY: 5 })).toThrow();
       expect(() => createPlateauModel({ startX: 10, startY: 5, endX: 5, endY: 10 })).toThrow();
     });
-    describe('landRover', () => {
-      it('should not land rover if position is outside bounds', () => {
-        const plateau = createPlateauModel({ endX: 2, endY: 2 });
-        expect(() => plateau.landRover(roverMock)).toThrow();
-      });
-    });
   });
 });
