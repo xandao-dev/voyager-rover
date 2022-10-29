@@ -38,7 +38,7 @@ function createSimulatorController() {
       while (true) {
         const { rover } = await landRover(plateau, roverId);
         const { roverCommands } = await getRoverCommands(rover);
-        rover.sequenceMove(plateau, roverCommands);
+        rover.sequentialMove(plateau, roverCommands);
 
         const { x, y, direction } = rover.position();
         console.log(`Final Position: ${x} ${y} ${direction}\n`);

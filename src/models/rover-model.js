@@ -1,9 +1,15 @@
-const { cardinalDirections, cardinalDirectionsDegrees } = require('../utils/constants.js');
+const { cardinalDirections, cardinalDirectionsDegrees, roverCommands } = require('../utils/constants.js');
+const { ValidationError } = require('../errors/validation-error.js');
 const { getKeyByValue } = require('../utils/helpers.js');
 
 function createRoverModel({ id, pos: { x, y, direction } }) {
   const roverId = id;
   const roverPosition = { x, y, direction };
+
+  validateRoverId(roverId);
+  validateRoverCoordinates(roverPosition.x, roverPosition.y);
+  validateRoverDirection(roverPosition.direction);
+
   const getPosition = () => ({ ...roverPosition });
 
   const estimateForwardPosition = () => {
@@ -17,8 +23,6 @@ function createRoverModel({ id, pos: { x, y, direction } }) {
       return { x, y: y - 1 };
     } else if (roverPosition.direction === cardinalDirections.WEST) {
       return { x: x - 1, y };
-    } else {
-      throw new Error('Invalid direction');
     }
   };
 
@@ -30,15 +34,15 @@ function createRoverModel({ id, pos: { x, y, direction } }) {
     });
   };
 
-  const moveForward = (map) => {
+  const moveForwardCarefully = (map) => {
     const forwardPosition = estimateForwardPosition();
 
     if (willCollide(map, forwardPosition)) {
-      throw new Error('Rover will collide with another rover');
+      return;
     }
 
     if (!map.isWithinBounds(forwardPosition)) {
-      throw new Error('Rover cannot move outside the bounds');
+      return;
     }
 
     roverPosition.x = forwardPosition.x;
@@ -46,10 +50,10 @@ function createRoverModel({ id, pos: { x, y, direction } }) {
   };
 
   const rotateTo = (directionCommand) => {
-    let newDirectionDegree = cardinalDirectionsDegrees[direction];
-    if (directionCommand === 'L') {
+    let newDirectionDegree = cardinalDirectionsDegrees[roverPosition.direction];
+    if (directionCommand === roverCommands.TURN_LEFT) {
       newDirectionDegree -= 90;
-    } else if (directionCommand === 'R') {
+    } else if (directionCommand === roverCommands.TURN_RIGHT) {
       newDirectionDegree += 90;
     }
     if (newDirectionDegree < 0) {
@@ -61,25 +65,61 @@ function createRoverModel({ id, pos: { x, y, direction } }) {
   };
 
   const move = (map, command) => {
-    if (command === 'M') {
-      try {
-        moveForward(map);
-      } catch (error) {
-        // FIXME: add a logger
-        console.error(error.message);
-      }
+    validateCommand(command);
+
+    if (command === roverCommands.FORWARD) {
+      moveForwardCarefully(map);
     } else {
       rotateTo(command);
     }
   };
 
-  const sequenceMove = (map, commands) => commands.forEach((command) => move(map, command));
+  const sequentialMove = (map, commands) => {
+    validateMap(map);
+    commands.forEach((command) => move(map, command));
+  };
 
   return {
     id: roverId,
     position: getPosition,
-    sequenceMove,
+    sequentialMove,
   };
+}
+
+function validateRoverId(id) {
+  if (!Number.isInteger(id)) {
+    throw new ValidationError('Rover id must be an integer');
+  }
+  if (id < 0) {
+    throw new ValidationError('Rover id must be zero or greater');
+  }
+}
+
+function validateRoverCoordinates(x, y) {
+  if (!Number.isInteger(x) || !Number.isInteger(y)) {
+    throw new ValidationError('Rover coordinates must be integers');
+  }
+  if (x < 0 || y < 0) {
+    throw new ValidationError('Rover coordinates must be zero or greater');
+  }
+}
+
+function validateRoverDirection(direction) {
+  if (!Object.values(cardinalDirections).includes(direction)) {
+    throw new ValidationError('Rover direction must be one of N, E, S, W');
+  }
+}
+
+function validateMap(map) {
+  if (!map?.rovers || !map?.isWithinBounds) {
+    throw new Error('Invalid map');
+  }
+}
+
+function validateCommand(command) {
+  if (!Object.values(roverCommands).includes(command)) {
+    throw new Error('Invalid command');
+  }
 }
 
 module.exports = { createRoverModel };
