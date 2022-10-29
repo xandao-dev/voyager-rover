@@ -9,9 +9,6 @@ describe('createPromptValidator', () => {
   describe('happy path', () => {
     it('should return an object with validate method', () => {
       expect(validator).toHaveProperty('validate');
-    });
-
-    it('should return an object with validate methods that are function', () => {
       expect(validator.validate).toBeInstanceOf(Function);
     });
 

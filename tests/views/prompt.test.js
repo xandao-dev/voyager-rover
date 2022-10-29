@@ -22,9 +22,6 @@ describe('createPrompt', () => {
     it('should return an object with ask and close methods', () => {
       expect(prompt).toHaveProperty('ask');
       expect(prompt).toHaveProperty('close');
-    });
-
-    it('should return an object with ask and close methods that are functions', () => {
       expect(prompt.ask).toBeInstanceOf(Function);
       expect(prompt.close).toBeInstanceOf(Function);
     });
