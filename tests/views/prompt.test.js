@@ -16,7 +16,10 @@ describe('createPrompt', () => {
     });
 
     it('should not throw with the original readline interface', () => {
-      expect(() => createPrompt()).not.toThrow();
+      expect(() => {
+        const prompt = createPrompt();
+        prompt.close();
+      }).not.toThrow();
     });
 
     it('should return an object with ask and close methods', () => {
@@ -66,11 +69,7 @@ describe('createPrompt', () => {
       close: undefined,
     };
 
-    it('should throw an error if readlineInterface.question is not a function', () => {
-      expect(() => createPrompt({ readlineInterface: readlineInterfaceMock })).toThrow();
-    });
-
-    it('should throw an error if readlineInterface.close is not a function', () => {
+    it('should throw an error if readlineInterface.question or readlineInterface.close is not a function', () => {
       expect(() => createPrompt({ readlineInterface: readlineInterfaceMock })).toThrow();
     });
   });
