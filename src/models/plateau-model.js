@@ -22,10 +22,12 @@ function createPlateauModel({ startX = 0, startY = 0, endX, endY } = {}) {
 
   const landRover = (rover) => rovers.push(rover);
 
+  const getRovers = () => rovers;
+
   return {
     isWithinBounds,
     landRover,
-    rovers,
+    rovers: getRovers,
   };
 }
 

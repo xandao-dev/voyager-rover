@@ -8,7 +8,7 @@ describe('createPlateauModel', () => {
       expect(plateau).toHaveProperty('rovers');
       expect(plateau).toHaveProperty('landRover');
       expect(plateau.isWithinBounds).toBeInstanceOf(Function);
-      expect(plateau.rovers).toBeInstanceOf(Array);
+      expect(plateau.rovers()).toBeInstanceOf(Array);
       expect(plateau.landRover).toBeInstanceOf(Function);
     });
 
@@ -35,14 +35,14 @@ describe('createPlateauModel', () => {
     describe('rovers', () => {
       it('should start with empty rovers array', () => {
         const plateau = createPlateauModel({ endX: 10, endY: 10 });
-        expect(plateau.rovers).toHaveLength(0);
+        expect(plateau.rovers()).toHaveLength(0);
       });
     });
     describe('landRover', () => {
       it('should add a object to rovers array', () => {
         const plateau = createPlateauModel({ endX: 10, endY: 10 });
         plateau.landRover({ x: 5, y: 5 });
-        expect(plateau.rovers).toHaveLength(1);
+        expect(plateau.rovers()).toHaveLength(1);
       });
     });
   });
