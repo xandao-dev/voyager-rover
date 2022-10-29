@@ -1,7 +1,7 @@
 const { cardinalDirections, cardinalDirectionsDegrees } = require('../utils/constants.js');
 const { getKeyByValue } = require('../utils/helpers.js');
 
-function createRover({ id, pos: { x, y, direction } }) {
+function createRoverModel({ id, pos: { x, y, direction } }) {
   const roverId = id;
   const roverPosition = { x, y, direction };
   const getPosition = () => ({ ...roverPosition });
@@ -22,18 +22,18 @@ function createRover({ id, pos: { x, y, direction } }) {
     }
   };
 
-  const willCollide = (rovers, forwardPosition) => {
-    const otherRovers = rovers.filter((rover) => rover !== id);
+  const willCollide = (map, forwardPosition) => {
+    const otherRovers = map.rovers().filter((rover) => rover !== id);
     return otherRovers.some((neighborRover) => {
       const neighborRoverPosition = neighborRover.position();
       return neighborRoverPosition.x === forwardPosition.x && neighborRoverPosition.y === forwardPosition.y;
     });
   };
 
-  const moveForward = (map, rovers) => {
+  const moveForward = (map) => {
     const forwardPosition = estimateForwardPosition();
 
-    if (willCollide(rovers, forwardPosition)) {
+    if (willCollide(map, forwardPosition)) {
       throw new Error('Rover will collide with another rover');
     }
 
@@ -60,10 +60,10 @@ function createRover({ id, pos: { x, y, direction } }) {
     roverPosition.direction = getKeyByValue(cardinalDirectionsDegrees, newDirectionDegree);
   };
 
-  const move = (map, rovers, command) => {
+  const move = (map, command) => {
     if (command === 'M') {
       try {
-        moveForward(map, rovers);
+        moveForward(map);
       } catch (error) {
         // FIXME: add a logger
         console.error(error.message);
@@ -73,16 +73,13 @@ function createRover({ id, pos: { x, y, direction } }) {
     }
   };
 
-  const sequenceMove = (map, rovers, commands) => commands.forEach((command) => move(map, rovers, command));
+  const sequenceMove = (map, commands) => commands.forEach((command) => move(map, command));
 
   return {
     id: roverId,
     position: getPosition,
-    moveForward,
-    rotateTo,
-    move,
     sequenceMove,
   };
 }
 
-module.exports = { createRover };
+module.exports = { createRoverModel };
