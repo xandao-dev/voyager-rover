@@ -19,12 +19,10 @@
 	"prettier.configPath": "",
 	"eslint.validate": [
 		"javascript",
-		"json",
-		"markdown"
+		"json"
 	],
 	"eslint.probe": [
 		"javascript",
-		"json",
-		"markdown"
+		"json"
 	],
 }
