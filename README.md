@@ -3,7 +3,7 @@
   <h3 align="center">Voyager Rover</h3>
 
   <p align="center">
-    A fictional calculator of final coordinates of a squadron of robotic rovers that landed by NASA on a plateau on Mars.
+    A fictional calculator of final coordinates of a squadron of robotic rovers landed by NASA on a plateau on Mars.
     <br />
     <a href="https://github.com/xandao-dev/voyager-rover"><strong>Explore the docs »</strong></a>
     <br />
@@ -23,7 +23,6 @@
       <ul>
         <li><a href="#features">Features</a></li>
         <li><a href="#built-with">Built With</a></li>
-        <li><a href="#business-rules">Business Rules</a></li>
       </ul>
     </li>
     <li>
@@ -48,64 +47,78 @@
 
 ### Mars Rover in JavaScript
 
-&nbsp;&nbsp;&nbsp;&nbsp; A squad of robotic rovers are to be landed by NASA on a plateau on Mars. <br />
+A squad of robotic rovers are to be landed by NASA on a plateau on Mars. <br />
 
-&nbsp;&nbsp;&nbsp;&nbsp; This plateau, which is curiously rectangular, must be navigated by the rovers so that their on-board cameras can get a complete view of the surrounding terrain to send back to Earth. <br />
+This plateau, which is curiously rectangular, must be navigated by the rovers so that their on-board cameras can get a complete view of the surrounding terrain to send back to Earth. <br />
 
-&nbsp;&nbsp;&nbsp;&nbsp; A rover’s position and location is represented by a combination of x and y co-ordinates and a letter representing one of the four cardinal compass points. The plateau is divided up into a grid to simplify navigation. An example position might be 0, 0, N, which means the rover is in the bottom left corner and facing North. <br />
+A rover’s position and location is represented by a combination of x and y co-ordinates and a letter representing one of the four cardinal compass points. The plateau is divided up into a grid to simplify navigation. An example position might be 0, 0, N, which means the rover is in the bottom left corner and facing North. <br />
 
-&nbsp;&nbsp;&nbsp;&nbsp; In order to control a rover , NASA sends a simple string of letters. The possible letters are ‘L’, ‘R’ and ‘M’. ‘L’ and ‘R’ makes the rover spin 90 degrees left or right respectively, without moving from its current spot. ‘M’ means move forward one grid point, and maintain the same heading. <br />
+In order to control a rover , NASA sends a simple string of letters. The possible letters are ‘L’, ‘R’ and ‘M’. ‘L’ and ‘R’ makes the rover spin 90 degrees left or right respectively, without moving from its current spot. ‘M’ means move forward one grid point, and maintain the same heading. <br />
 
-&nbsp;&nbsp;&nbsp;&nbsp; Assume that the square directly North from (x, y) is (x, y 1).
+Assume that the square directly North from (x, y) is (x, y 1).
 
 ### Input
 
-&nbsp;&nbsp;&nbsp;&nbsp;The first line of input is the upper-right coordinates of the plateau, the lower-left coordinates are assumed to be 0,0. <br />
+The first line of input is the upper-right coordinates of the plateau, the lower-left coordinates are assumed to be 0,0. <br />
 
-&nbsp;&nbsp;&nbsp;&nbsp;The rest of the input is information pertaining to the rovers that have been deployed. Each rover has two lines of input. The first line gives the rover’s position, and the second line is a series of instructions telling the rover how to explore the plateau. <br />
+The rest of the input is information pertaining to the rovers that have been deployed. Each rover has two lines of input. The first line gives the rover’s position, and the second line is a series of instructions telling the rover how to explore the plateau. <br />
 
-&nbsp;&nbsp;&nbsp;&nbsp;The position is made up of two integers and a letter separated by spaces, corresponding to the x and y co-ordinates and the rover’s orientation. <br />
+The position is made up of two integers and a letter separated by spaces, corresponding to the x and y co-ordinates and the rover’s orientation. <br />
 
-&nbsp;&nbsp;&nbsp;&nbsp;Each rover will be finished sequentially, which means that the second rover won’t start to move until the first one has finished moving.
+Each rover will be finished sequentially, which means that the second rover won’t start to move until the first one has finished moving.
 
 ### Output
 
-&nbsp;&nbsp;&nbsp;&nbsp;The output for each rover should be its final co-ordinates and heading.
+The output for each rover should be its final co-ordinates and heading.
 
 ### Rover Data Example
 
-Example 1
+Example 1 - Regular
 
 ```
-Landing Position: 1 2 N \
-Instruction: LMLMLMLMM \
+Plateau Size: 10 10
+Landing Position: 1 2 N
+Instruction: LMLMLMLMM
 Final Position: 1 3 N
-```
 
-Example 2
-
-```
-Landing Position: 3 3 E \
-Instruction: MRRMMRMRRM \
+Landing Position: 3 3 E
+Instruction: MRRMMRMRRM
 Final Position: 2 3 S
+```
+
+Example 2 - Avoid collision
+
+```
+Plateau Size: 10 10
+Landing Position: 2 0 N
+Instruction: MM
+Final Position: 2 2 N
+
+Landing Position: 4 2 W
+Instruction: MMMRM
+Final Position: 3 3 N
 ```
 
 ### Features
 
--
+- [x] Read inputs from command line
+- [x] Validate inputs (sanitize, regex validation and coercion)
+- [x] Calculate final position of each rover
+- [x] Avoid collision between rovers
+- [x] Avoid rovers to go out of the plateau
+- [x] Avoid rovers to be landed outside the plateau
+- [x] Avoid rovers to be landed on another rover
 
 ### Built With
 
+- [MVC Architecture](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) - Model-View-Controller Architecture
+- [Factory Method Design Pattern](https://refactoring.guru/design-patterns/factory-method) - Design Pattern similar to classes
 - [Node.js](https://nodejs.org/) - a JavaScript runtime built on Chrome's V8 JavaScript engine
-- [eslint](https://github.com/eslint/eslint) with [AirBnB config](https://github.com/iamturns/eslint-config-airbnb-typescript) - code quality linter with the opinionated AirBnB config
-- [prettier](https://github.com/prettier/prettier) and [eslint config](https://github.com/prettier/eslint-config-prettier) - formatter linter with eslint integration
-- [nodemon](https://nodemon.io/) - transpile TS and hot reload your app
-- [docker](https://www.docker.com/) - OS-level virtualization to deliver software in containers
-- [docker compose](https://docs.docker.com/compose/) - use a YAML file to configure your application’s services
-
-### Business Rules
-
-<!-- GETTING STARTED -->
+- [Jest](https://jestjs.io/) - a delightful JavaScript Testing Framework with a focus on simplicity (unit and integration tests)
+- [Eslint](https://github.com/eslint/eslint) with [Eslint Google config](https://github.com/google/eslint-config-google) - code quality linter with the opinionated Google config
+- [Prettier](https://github.com/prettier/prettier) and [eslint config](https://github.com/prettier/eslint-config-prettier) - formatter linter with eslint integration
+- [Docker](https://www.docker.com/) - OS-level virtualization to deliver software in containers
+- [Docker compose](https://docs.docker.com/compose/) - use a YAML file to configure your application’s services
 
 ## Getting Started
 
@@ -119,8 +132,6 @@ To get a local copy up and running follow these simple steps.
    ```
 2. [Install Docker Engine](https://docs.docker.com/engine/install/)
 3. [Install Docker Compose](https://docs.docker.com/compose/install/)
-
-<!-- USAGE EXAMPLES -->
 
 ## Usage
 
