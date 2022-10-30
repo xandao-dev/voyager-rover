@@ -12,6 +12,7 @@ function createRoverModel({ id, pos: { x, y, direction } }, plateau) {
   validatePlateau(plateau);
   validateLandingPosition(plateau, roverPosition.x, roverPosition.y);
 
+  const getId = () => roverId;
   const getPosition = () => ({ ...roverPosition });
   const estimateForwardPosition = () => {
     const { x, y } = roverPosition;
@@ -27,9 +28,9 @@ function createRoverModel({ id, pos: { x, y, direction } }, plateau) {
     }
   };
   const willCollide = (forwardPosition) => {
-    const otherRovers = plateau.rovers().filter((rover) => rover !== id);
-    return otherRovers.some((neighborRover) => {
-      const neighborRoverPosition = neighborRover.position();
+    const neighborRovers = plateau.getRovers().filter((rover) => rover.getId() !== roverId);
+    return neighborRovers.some((neighborRover) => {
+      const neighborRoverPosition = neighborRover.getPosition();
       return neighborRoverPosition.x === forwardPosition.x && neighborRoverPosition.y === forwardPosition.y;
     });
   };
@@ -73,8 +74,8 @@ function createRoverModel({ id, pos: { x, y, direction } }, plateau) {
   const sequentialMove = (commands) => commands.forEach((command) => move(command));
 
   return {
-    id: roverId,
-    position: getPosition,
+    getId,
+    getPosition,
     sequentialMove,
   };
 }
@@ -101,16 +102,16 @@ function validateRoverDirection(direction) {
   }
 }
 function validatePlateau(plateau) {
-  if (!plateau?.rovers || !plateau?.isWithinBounds) {
-    throw new Error('Invalid plateau');
+  if (!plateau?.getRovers || !plateau?.isWithinBounds) {
+    throw new Error('Invalid plateau, can not land rover on it');
   }
 }
 function validateLandingPosition(plateau, x, y) {
   if (!plateau.isWithinBounds({ x, y })) {
     throw new Error('Rover cannot be placed outside of the plateau');
   }
-  const hasAnotherRoverInPoint = plateau.rovers().some((neighborRover) => {
-    const neighborRoverPosition = neighborRover.position();
+  const hasAnotherRoverInPoint = plateau.getRovers().some((neighborRover) => {
+    const neighborRoverPosition = neighborRover.getPosition();
     if (neighborRoverPosition.x === x && neighborRoverPosition.y === y) {
       return true;
     }

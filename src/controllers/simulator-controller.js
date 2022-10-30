@@ -34,7 +34,7 @@ function createSimulatorController() {
     return { roverCommands };
   };
   const showRoverFinalPosition = (rover) => {
-    const { x, y, direction } = rover.position();
+    const { x, y, direction } = rover.getPosition();
     console.log(`Final Position: ${x} ${y} ${direction}\n`);
   };
   const run = async () => {

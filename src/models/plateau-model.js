@@ -17,7 +17,7 @@ function createPlateauModel({ startX = 0, startY = 0, endX, endY } = {}) {
   return {
     isWithinBounds,
     landRover,
-    rovers: getRovers,
+    getRovers,
   };
 }
 

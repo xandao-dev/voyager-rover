@@ -2,45 +2,45 @@ const { createRoverModel } = require('../../src/models/rover-model.js');
 
 const roverDummy = { id: 0, pos: { x: 5, y: 5, direction: 'N' } };
 const roverMockCollision = {
-  id: 1,
-  position: jest.fn(() => ({ x: 5, y: 6, direction: 'S' })),
+  getId: jest.fn(() => 1),
+  getPosition: jest.fn(() => ({ x: 5, y: 6, direction: 'S' })),
   sequentialMove: jest.fn(),
 };
 
 const plateauMockWithinBounds = {
-  rovers: jest.fn(() => []),
+  getRovers: jest.fn(() => []),
   isWithinBounds: jest.fn(() => true),
 };
 const plateauMockOutsideBounds = {
-  rovers: jest.fn(() => []),
+  getRovers: jest.fn(() => []),
   isWithinBounds: jest.fn(({ x, y }) => x === 5 && y === 5),
 };
 const plateauMockRoverCollision = {
-  rovers: jest.fn(() => [roverMockCollision]),
+  getRovers: jest.fn(() => [roverMockCollision]),
   isWithinBounds: jest.fn(() => true),
 };
 
 describe('createRoverModel', () => {
   describe('happy path', () => {
-    it('should return an object with position and sequentialMove methods, and id number', () => {
+    it('should return an object with getId, getPosition and sequentialMove methods', () => {
       const rover = createRoverModel(roverDummy, plateauMockWithinBounds);
-      expect(rover).toHaveProperty('id');
-      expect(rover).toHaveProperty('position');
+      expect(rover).toHaveProperty('getId');
+      expect(rover).toHaveProperty('getPosition');
       expect(rover).toHaveProperty('sequentialMove');
-      expect(typeof rover.id).toBe('number');
-      expect(rover.position).toBeInstanceOf(Function);
+      expect(rover.getId).toBeInstanceOf(Function);
+      expect(rover.getPosition).toBeInstanceOf(Function);
       expect(rover.sequentialMove).toBeInstanceOf(Function);
     });
-    describe('id', () => {
+    describe('getId', () => {
       it('should return the id passed in', () => {
         const rover = createRoverModel(roverDummy, plateauMockWithinBounds);
-        expect(rover.id).toBe(0);
+        expect(rover.getId()).toBe(0);
       });
     });
-    describe('position', () => {
+    describe('getPosition', () => {
       it('should return the same position object that was passed in', () => {
         const rover = createRoverModel(roverDummy, plateauMockWithinBounds);
-        const result = rover.position();
+        const result = rover.getPosition();
         expect(result).toEqual(roverDummy.pos);
       });
     });
@@ -48,27 +48,27 @@ describe('createRoverModel', () => {
       it('should change the position of the rover by 5 units in the direction it is facing', () => {
         const rover = createRoverModel(roverDummy, plateauMockWithinBounds);
         rover.sequentialMove(['M', 'M', 'M', 'M', 'M']);
-        expect(rover.position()).toEqual({ x: 5, y: 10, direction: 'N' });
+        expect(rover.getPosition()).toEqual({ x: 5, y: 10, direction: 'N' });
       });
       it('should change the direction of the rover to the left', () => {
         const rover = createRoverModel(roverDummy, plateauMockWithinBounds);
         rover.sequentialMove(['L']);
-        expect(rover.position()).toEqual({ x: 5, y: 5, direction: 'W' });
+        expect(rover.getPosition()).toEqual({ x: 5, y: 5, direction: 'W' });
       });
       it('should change the direction of the rover to the right', () => {
         const rover = createRoverModel(roverDummy, plateauMockWithinBounds);
         rover.sequentialMove(['R']);
-        expect(rover.position()).toEqual({ x: 5, y: 5, direction: 'E' });
+        expect(rover.getPosition()).toEqual({ x: 5, y: 5, direction: 'E' });
       });
       it('should not change the position of the rover if it is going to collide with another rover', () => {
         const rover = createRoverModel(roverDummy, plateauMockRoverCollision);
         rover.sequentialMove(['M', 'M']);
-        expect(rover.position()).toEqual({ x: 5, y: 5, direction: 'N' });
+        expect(rover.getPosition()).toEqual({ x: 5, y: 5, direction: 'N' });
       });
       it('should not change the position of the rover if it is going to go out of bounds', () => {
         const rover = createRoverModel(roverDummy, plateauMockOutsideBounds);
         rover.sequentialMove(['M', 'R', 'M', 'R', 'M', 'R', 'M', 'R', 'M']);
-        expect(rover.position()).toEqual({ x: 5, y: 5, direction: 'N' });
+        expect(rover.getPosition()).toEqual({ x: 5, y: 5, direction: 'N' });
       });
     });
   });

@@ -1,19 +1,19 @@
 const { createPlateauModel } = require('../../src/models/plateau-model.js');
 
 const roverMock = {
-  id: 0,
-  position: jest.fn(() => ({ x: 5, y: 5, direction: 'N' })),
+  getId: jest.fn(() => 0),
+  getPosition: jest.fn(() => ({ x: 5, y: 5, direction: 'N' })),
 };
 
 describe('createPlateauModel', () => {
   describe('happy path', () => {
-    it('should return an object with isWithinBounds, landRover methods and rovers array', () => {
+    it('should return an object with isWithinBounds, landRover and getRovers methods', () => {
       const plateau = createPlateauModel({ endX: 10, endY: 10 });
       expect(plateau).toHaveProperty('isWithinBounds');
-      expect(plateau).toHaveProperty('rovers');
+      expect(plateau).toHaveProperty('getRovers');
       expect(plateau).toHaveProperty('landRover');
       expect(plateau.isWithinBounds).toBeInstanceOf(Function);
-      expect(plateau.rovers()).toBeInstanceOf(Array);
+      expect(plateau.getRovers).toBeInstanceOf(Function);
       expect(plateau.landRover).toBeInstanceOf(Function);
     });
 
@@ -37,17 +37,17 @@ describe('createPlateauModel', () => {
         expect(lowerResult).toBe(false);
       });
     });
-    describe('rovers', () => {
-      it('should start with empty rovers array', () => {
+    describe('getRovers', () => {
+      it('should start without rovers', () => {
         const plateau = createPlateauModel({ endX: 10, endY: 10 });
-        expect(plateau.rovers()).toHaveLength(0);
+        expect(plateau.getRovers()).toHaveLength(0);
       });
     });
     describe('landRover', () => {
-      it('should add a object to rovers array', () => {
+      it('should land a rover on the plateau', () => {
         const plateau = createPlateauModel({ endX: 10, endY: 10 });
         plateau.landRover(roverMock);
-        expect(plateau.rovers()).toHaveLength(1);
+        expect(plateau.getRovers()).toHaveLength(1);
       });
     });
   });
