@@ -2,7 +2,7 @@ const { createSimulatorController } = require('./controllers/simulator-controlle
 (async () => {
   try {
     console.log(
-      'Welcome to Voyager Rover\n',
+      '----------------- Welcome to Voyager Rover -----------------\n',
       'A fictional calculator of final coordinates of a squadron of robotic rovers landed by NASA on a plateau on Mars.\n\n',
       'To start the simulator, follow the instructions below:\n',
       '1. Enter the plateau size, width and height. (e.g. 5 5)\n',

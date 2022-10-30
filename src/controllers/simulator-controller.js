@@ -12,44 +12,54 @@ function createSimulatorController() {
   const idGenerator = createIdGenerator();
 
   const generatePlateau = async () => {
-    const plateauSize = await prompt.ask('Plateau Size: ');
-    const [plateauEndX, plateauEndY] = validate(plateauSize, plateauSizeRegex, plateauSizeTypes);
-    const plateau = createPlateauModel({ endX: plateauEndX, endY: plateauEndY });
-    return { plateau };
+    while (true) {
+      try {
+        const plateauSize = await prompt.ask('Plateau Size: ');
+        const [plateauEndX, plateauEndY] = validate(plateauSize, plateauSizeRegex, plateauSizeTypes);
+        const plateau = createPlateauModel({ endX: plateauEndX, endY: plateauEndY });
+        return { plateau };
+      } catch (error) {
+        console.log(`Error: ${error.message}\n\tFormat: <integer> <integer>\n\tExample: 10 10\n`);
+      }
+    }
   };
   const landRover = async (plateau) => {
-    const roverPosition = await prompt.ask('Landing Position: ');
-    const [roverX, roverY, roverDirection] = validate(roverPosition, roverPositionRegex, roverPositionTypes);
-    const rover = createRoverModel(
-      { id: idGenerator.next(), pos: { x: roverX, y: roverY, direction: roverDirection } },
-      plateau
-    );
-    plateau.landRover(rover);
-    return { rover };
+    const id = idGenerator.next();
+    while (true) {
+      try {
+        const roverPosition = await prompt.ask('Landing Position: ');
+        const [roverX, roverY, roverDirection] = validate(roverPosition, roverPositionRegex, roverPositionTypes);
+        const rover = createRoverModel({ id, pos: { x: roverX, y: roverY, direction: roverDirection } }, plateau);
+        plateau.landRover(rover);
+        return { rover };
+      } catch (error) {
+        console.log(`Error: ${error.message}\n\tFormat: <integer> <integer> <direction(NSEW)>\n\tExample: 1 2 N\n`);
+      }
+    }
   };
   const getRoverCommands = async () => {
-    const roverCommand = await prompt.ask('Instructions: ');
-    const [validRoverCommand] = validate(roverCommand, roverCommandsRegex, roverCommandsTypes);
-    const roverCommands = validRoverCommand.split('');
-    return { roverCommands };
+    while (true) {
+      try {
+        const roverCommand = await prompt.ask('Instructions: ');
+        const [validRoverCommand] = validate(roverCommand, roverCommandsRegex, roverCommandsTypes);
+        const roverCommands = validRoverCommand.split('');
+        return { roverCommands };
+      } catch (error) {
+        console.log(`Error: ${error.message}\n\tFormat: <commands(LMR)>\n\tExample: LMRMLMLMM\n`);
+      }
+    }
   };
   const showRoverFinalPosition = (rover) => {
     const { x, y, direction } = rover.getPosition();
     console.log(`Final Position: ${x} ${y} ${direction}\n`);
   };
   const run = async () => {
-    try {
-      const { plateau } = await generatePlateau();
-      while (true) {
-        const { rover } = await landRover(plateau);
-        const { roverCommands } = await getRoverCommands(rover);
-        rover.sequentialMove(roverCommands);
-        showRoverFinalPosition(rover);
-      }
-    } catch (error) {
-      console.log(error.message);
-    } finally {
-      prompt.close();
+    const { plateau } = await generatePlateau();
+    while (true) {
+      const { rover } = await landRover(plateau);
+      const { roverCommands } = await getRoverCommands(rover);
+      rover.sequentialMove(roverCommands);
+      showRoverFinalPosition(rover);
     }
   };
 

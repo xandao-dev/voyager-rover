@@ -7,8 +7,7 @@ function createPrompt() {
   });
 
   const ask = (question) => new Promise((resolve) => readlineInterface.question(question, (answer) => resolve(answer)));
-  const close = () => readlineInterface.close();
-  return { ask, close };
+  return { ask };
 }
 
 module.exports = { createPrompt };
