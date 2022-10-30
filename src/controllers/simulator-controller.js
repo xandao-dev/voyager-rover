@@ -15,7 +15,6 @@ function createSimulatorController() {
     const plateau = createPlateauModel({ endX: plateauEndX, endY: plateauEndY });
     return { plateau };
   };
-
   const landRover = async (plateau, id) => {
     const roverPosition = await prompt.ask('Landing Position: ');
     const [roverX, roverY, roverDirection] = validate(roverPosition, roverPositionRegex, roverPositionTypes);
@@ -23,14 +22,12 @@ function createSimulatorController() {
     plateau.landRover(rover);
     return { rover };
   };
-
-  const getRoverCommands = async (rover) => {
+  const getRoverCommands = async () => {
     const roverCommand = await prompt.ask('Instructions: ');
     const [validRoverCommand] = validate(roverCommand, roverCommandsRegex, roverCommandsTypes);
     const roverCommands = validRoverCommand.split('');
     return { roverCommands };
   };
-
   const run = async () => {
     try {
       const { plateau } = await generatePlateau();
@@ -45,15 +42,13 @@ function createSimulatorController() {
         roverId += 1;
       }
     } catch (error) {
-      console.error(error.message);
+      console.log(error.message);
     } finally {
       prompt.close();
     }
   };
 
-  return {
-    run,
-  };
+  return { run };
 }
 
 module.exports = { createSimulatorController };
