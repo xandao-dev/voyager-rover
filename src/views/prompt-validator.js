@@ -2,7 +2,7 @@ const { InputError } = require('../errors/input-error.js');
 const { ViewError } = require('../errors/view-error.js');
 
 function createPromptValidator() {
-  const sanitize = (answer) => answer.trim();
+  const sanitize = (answer) => answer?.trim() || '';
   const validateRegex = (answer, regex) => {
     if (!regex.test(answer)) {
       throw new InputError({ message: 'Invalid input', view: 'prompt-validator' });

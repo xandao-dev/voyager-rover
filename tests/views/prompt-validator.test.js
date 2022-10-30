@@ -13,6 +13,14 @@ describe('createPromptValidator', () => {
     });
 
     describe('validate', () => {
+      it('should parse falsy values to an empty string', () => {
+        const emptyStringOnlyRegex = /^$/;
+        const emptyStringOnlyTypes = [(value) => String(value)];
+
+        const result = validator.validate(null, emptyStringOnlyRegex, emptyStringOnlyTypes);
+        expect(result).toEqual(['']);
+      });
+
       it('should trim and return an array with one string', () => {
         const stringOnlyRegex = /^[a-zA-Z]+$/;
         const stringOnlyTypes = [(value) => String(value)];
