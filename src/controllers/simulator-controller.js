@@ -27,7 +27,7 @@ function createSimulatorController() {
     const id = idGenerator.next();
     while (true) {
       try {
-        const roverPosition = await prompt.ask('Landing Position: ');
+        const roverPosition = await prompt.ask('\nLanding Position: ');
         const [roverX, roverY, roverDirection] = validate(roverPosition, roverPositionRegex, roverPositionTypes);
         const rover = createRoverModel({ id, pos: { x: roverX, y: roverY, direction: roverDirection } }, plateau);
         plateau.landRover(rover);
@@ -49,9 +49,17 @@ function createSimulatorController() {
       }
     }
   };
-  const showRoverFinalPosition = (rover) => {
+  const showRoverMovementResults = (rover) => {
     const { x, y, direction } = rover.getPosition();
-    console.log(`Final Position: ${x} ${y} ${direction}\n`);
+    const { total, success, failure } = rover.getMovementReports();
+    console.log(`${success} of ${total} movement(s) were successful.`);
+    if (failure.outOfBounds > 0) {
+      console.log(`${failure.outOfBounds} movement(s) out of bounds were avoided.`);
+    }
+    if (failure.collisions > 0) {
+      console.log(`${failure.collisions} movement(s) into another rover were avoided.`);
+    }
+    console.log(`Final Position: ${x} ${y} ${direction}`);
   };
   const run = async () => {
     const { plateau } = await generatePlateau();
@@ -59,7 +67,7 @@ function createSimulatorController() {
       const { rover } = await landRover(plateau);
       const { roverCommands } = await getRoverCommands(rover);
       rover.sequentialMove(roverCommands);
-      showRoverFinalPosition(rover);
+      showRoverMovementResults(rover);
     }
   };
 

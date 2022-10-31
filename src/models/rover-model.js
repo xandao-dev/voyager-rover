@@ -5,6 +5,7 @@ const { getKeyByValue } = require('../utils/helpers.js');
 function createRoverModel({ id, pos: { x, y, direction } }, plateau) {
   const roverId = id;
   const roverPosition = { x, y, direction };
+  let movementReports = getInitialMovementReports();
 
   validateRoverId(roverId);
   validateRoverCoordinates(roverPosition.x, roverPosition.y);
@@ -14,6 +15,7 @@ function createRoverModel({ id, pos: { x, y, direction } }, plateau) {
 
   const getId = () => roverId;
   const getPosition = () => ({ ...roverPosition });
+  const getMovementReports = () => ({ ...movementReports, failure: { ...movementReports.failure } });
   const estimateForwardPosition = () => {
     const { x, y } = roverPosition;
 
@@ -38,15 +40,18 @@ function createRoverModel({ id, pos: { x, y, direction } }, plateau) {
     const forwardPosition = estimateForwardPosition();
 
     if (willCollide(forwardPosition)) {
+      movementReports.failure.collisions++;
       return;
     }
 
     if (!plateau.isWithinBounds(forwardPosition)) {
+      movementReports.failure.outOfBounds++;
       return;
     }
 
     roverPosition.x = forwardPosition.x;
     roverPosition.y = forwardPosition.y;
+    movementReports.success++;
   };
   const rotateTo = (directionCommand) => {
     let newDirectionDegree = cardinalDirectionsDegrees[roverPosition.direction];
@@ -61,6 +66,7 @@ function createRoverModel({ id, pos: { x, y, direction } }, plateau) {
       newDirectionDegree -= 360;
     }
     roverPosition.direction = getKeyByValue(cardinalDirectionsDegrees, newDirectionDegree);
+    movementReports.success++;
   };
   const move = (command) => {
     validateCommand(command);
@@ -71,15 +77,30 @@ function createRoverModel({ id, pos: { x, y, direction } }, plateau) {
       rotateTo(command);
     }
   };
-  const sequentialMove = (commands) => commands.forEach((command) => move(command));
+  const sequentialMove = (commands) => {
+    movementReports = getInitialMovementReports();
+    movementReports.total = commands.length;
+    commands.forEach((command) => move(command));
+  };
 
   return {
     getId,
     getPosition,
+    getMovementReports,
     sequentialMove,
   };
 }
 
+function getInitialMovementReports() {
+  return {
+    total: 0,
+    success: 0,
+    failure: {
+      outOfBounds: 0,
+      collisions: 0,
+    },
+  };
+}
 function validateRoverId(id) {
   if (!Number.isInteger(id)) {
     throw new ValidationError('Rover id must be an integer');
