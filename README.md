@@ -21,6 +21,10 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
+        <li><a href="#mars-rover">Mars Rover</a></li>
+        <li><a href="#input">Input</a></li>
+        <li><a href="#output">Output</a></li>
+        <li><a href="#rover-data-example">Rover Data Example</a></li>
         <li><a href="#features">Features</a></li>
         <li><a href="#built-with">Built With</a></li>
       </ul>
@@ -28,7 +32,6 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
@@ -45,7 +48,14 @@
 
 ## About The Project
 
-### Mars Rover in JavaScript
+<div align="center">
+  <a href="https://github.com/xandao-dev/voyager-rover">
+    <img src="static/simulator.png" alt="Voyager Rover Simulator">
+    <img src="static/coverage.png" alt="Test coverage"> 
+  </a>
+</div>
+
+### Mars Rover
 
 A squad of robotic rovers are to be landed by NASA on a plateau on Mars. <br />
 
